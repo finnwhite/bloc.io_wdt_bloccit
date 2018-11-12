@@ -7,7 +7,7 @@ describe( "routes : static", () => {
   describe( "GET /", () => {
 
     const url = base;
-    const match = "Welcome to Bloccit!";
+    const match = "Welcome to Bloccit";
 
     it( `should return status code 200 AND ` +
         `have "${ match }" in the body of the response`, ( done ) => {
