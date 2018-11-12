@@ -19,22 +19,39 @@ describe( "routes : static", () => {
     } );
 
   } );
-  /* ----- GET / ----- */
+  /* END ----- GET / ----- */
 
-  describe( "GET /marco", () => {
+  describe( "GET /about", () => {
 
-    const url = base + "marco";
+    const url = base + "about";
+    const match = "About Us";
 
-    it( `should return body containing string "polo"`, ( done ) => {
+    it( `should return body containing the string "${ match }"`, ( done ) => {
       request.get( url, ( err, res, body ) => {
         expect( res.statusCode ).toBe( 200 );
-        expect( body.toLowerCase() ).toContain( "polo" );
+        expect( body ).toContain( match );
         done();
       } );
     } );
 
   } );
-  /* ----- GET /marco ----- */
+  /* END ----- GET /about ----- */
+
+  describe( "GET /marco", () => {
+
+    const url = base + "marco";
+    const match = "polo";
+
+    it( `should return body containing the string "${ match }"`, ( done ) => {
+      request.get( url, ( err, res, body ) => {
+        expect( res.statusCode ).toBe( 200 );
+        expect( body.toLowerCase() ).toContain( match );
+        done();
+      } );
+    } );
+
+  } );
+  /* END ----- GET /marco ----- */
 
 } );
-/* ----- routes : static ----- */
+/* END ----- routes : static ----- */
