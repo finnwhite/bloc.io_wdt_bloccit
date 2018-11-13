@@ -5,7 +5,9 @@
   "main": "src/server.js",
   "scripts": {
     "test": "export NODE_ENV=test && jasmine",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "pgstart": "pg_ctl -D ~/PostgreSQL/data/pg96 start",
+    "pgstop": "pg_ctl -D ~/PostgreSQL/data/pg96 stop"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,9 @@
   "dependencies": {
     "dotenv": "^6.1.0",
     "ejs": "^2.6.1",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "pg": "^7.6.1",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.41.2"
   }
 }

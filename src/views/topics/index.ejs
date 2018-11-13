@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <% include ../static/partials/head.ejs %>
+  </head>
+  <body>
+    <% include ../static/partials/navbar.ejs %>
+    <main class="container">
+
+      <h1>Topics</h1>
+
+      <ul class="list-group">
+        <% topics.forEach( ( topic ) => { %>
+          <li class="list-group-item">
+            <a href="/topics/<%= topic.id %>"><%= topic.title %></a>
+          </li>
+        <% } ); %>
+      </ul>
+
+    </main>
+    <% include ../static/partials/baseScripts.ejs %>
+  </body>
+</html>
