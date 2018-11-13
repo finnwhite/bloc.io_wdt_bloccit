@@ -43,5 +43,49 @@ describe( "routes : topics", () => {
   } );
   /* END ----- GET /topics ----- */
 
+  describe( "GET /topics/new", () => {
+
+    const url = base + "new";
+
+    it( `should render a new topic form`, ( done ) => {
+      request.get( url, ( err, res, body ) => {
+        expect( err ).toBeNull();
+        expect( body ).toContain( "New Topic" );
+        done();
+      } );
+    } );
+
+  } );
+  /* END ----- GET /topics/new ----- */
+
+  describe( "POST /topics/create", () => {
+
+    const options = {
+      url: `${ base }create`,
+      form: {
+        title: "blink-182 songs",
+        description: "What's your favorite blink-182 song?"
+      }
+    };
+
+    it( `should create a new topic and redirect`, ( done ) => {
+      request.post( options, ( err, res, body ) => {
+        Topic.findOne( { where: { title: options.form.title } } )
+        .then( ( topic ) => {
+          expect( res.statusCode ).toBe( 303 );
+          expect( topic.title ).toBe( options.form.title );
+          expect( topic.description ).toBe( options.form.description );
+          done();
+        } )
+        .catch( ( err ) => {
+          console.log( err );
+          done();
+        } );
+      } );
+    } );
+
+  } );
+  /* END ----- POST /topics/create ----- */
+
 } );
 /* END ----- routes : topics ----- */
