@@ -120,5 +120,45 @@ describe( "routes : topics", () => {
   } );
   /* END ----- POST /topics/:id/destroy ----- */
 
+  describe( "GET /topics/:id/edit", () => {
+
+    it( "should render a view with an edit topic form", ( done ) => {
+      const url = `${ base }${ this.topic.id }/edit`;
+      request.get( url, ( err, res, body ) => {
+        expect( err ).toBeNull();
+        expect( body ).toContain( "Edit Topic" );
+        expect( body ).toContain( "JS Frameworks" );
+        done();
+      } );
+    } );
+
+  } );
+  /* END ----- GET /topics/:id/edit ----- */
+
+  describe( "POST /topics/:id/update", () => {
+
+    it( "should update the topic with the given values", ( done ) => {
+
+      const options = {
+        url: `${ base }${ this.topic.id }/update`,
+        form: {
+          title: "JavaScript Frameworks",
+          description: "There are a lot of them"
+        }
+      };
+
+      request.post( options, ( err, res, body ) => {
+        expect( err ).toBeNull();
+        Topic.findOne( { where: { id: this.topic.id } } )
+        .then( ( topic ) => {
+          expect( topic.title ).toBe( options.form.title );
+          done();
+        } );
+      } );
+    } );
+
+  } );
+  /* END ----- POST /topics/:id/update ----- */
+
 } );
 /* END ----- routes : topics ----- */
