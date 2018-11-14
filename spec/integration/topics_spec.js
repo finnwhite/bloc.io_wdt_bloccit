@@ -28,10 +28,8 @@ describe( "routes : topics", () => {
 
   describe( "GET /topics", () => {
 
-    const url = base;
-
-    it( `should return status code 200 AND all topics`, ( done ) => {
-      request.get( url, ( err, res, body ) => {
+    it( "should return status code 200 AND all topics", ( done ) => {
+      request.get( base, ( err, res, body ) => {
         expect( res.statusCode ).toBe( 200 );
         expect( err ).toBeNull();
         expect( body ).toContain( "Topics" );
@@ -45,10 +43,8 @@ describe( "routes : topics", () => {
 
   describe( "GET /topics/new", () => {
 
-    const url = base + "new";
-
-    it( `should render a new topic form`, ( done ) => {
-      request.get( url, ( err, res, body ) => {
+    it( "should render a new topic form", ( done ) => {
+      request.get( `${ base }new`, ( err, res, body ) => {
         expect( err ).toBeNull();
         expect( body ).toContain( "New Topic" );
         done();
@@ -68,7 +64,7 @@ describe( "routes : topics", () => {
       }
     };
 
-    it( `should create a new topic and redirect`, ( done ) => {
+    it( "should create a new topic and redirect", ( done ) => {
       request.post( options, ( err, res, body ) => {
         Topic.findOne( { where: { title: options.form.title } } )
         .then( ( topic ) => {
@@ -89,8 +85,9 @@ describe( "routes : topics", () => {
 
   describe( "GET /topics/:id", () => {
 
-    it( `should render a view with the selected topic`, ( done ) => {
-      request.get( `${ base }${ this.topic.id }`, ( err, res, body ) => {
+    it( "should render a view with the selected topic", ( done ) => {
+      const url = `${ base }${ this.topic.id }`;
+      request.get( url, ( err, res, body ) => {
         expect( err ).toBeNull();
         expect( body ).toContain( "JS Frameworks" );
         done();
@@ -102,7 +99,7 @@ describe( "routes : topics", () => {
 
   describe( "POST /topics/:id/destroy", () => {
 
-    it( `should delete the topic with the associated ID`, ( done ) => {
+    it( "should delete the topic with the associated ID", ( done ) => {
       Topic.findAll()
       .then( ( topics ) => {
         const countBefore = topics.length;
