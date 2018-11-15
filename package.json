@@ -6,8 +6,12 @@
   "scripts": {
     "test": "export NODE_ENV=test && jasmine",
     "start": "node src/server.js",
+
     "pgstart": "pg_ctl -D ~/PostgreSQL/data/pg96 start",
-    "pgstop": "pg_ctl -D ~/PostgreSQL/data/pg96 stop"
+    "pgstop": "pg_ctl -D ~/PostgreSQL/data/pg96 stop",
+
+    "sqmigrate": "sequelize db:migrate && sequelize db:migrate --env test",
+    "squndoall": "sequelize db:migrate:undo:all && sequelize db:migrate:undo:all --env test"
   },
   "repository": {
     "type": "git",
