@@ -33,7 +33,7 @@ module.exports = {
   ,
   destroy( req, res, next ) {
     topicQueries.deleteTopic( req.params.id, ( err, destroyedCount ) => {
-      if ( err ) { res.redirect( 500, ".." ); } // /topics/:id
+      if ( err ) { res.redirect( 500, `/topics/${ req.params.id }` ); }
       else { res.redirect( 303, "/topics" ); }
     } );
   }
