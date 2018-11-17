@@ -39,12 +39,14 @@ describe( "Post", () => {
     };
 
     sequelize.sync( { force: true } ).then( ( res ) => {
+
       Topic.create( {
         title: data.topic.title,
         description: data.topic.description
       } )
       .then( ( topic ) => {
         this.topic = topic;
+
         Post.create( {
           title: data.post.title,
           body: data.post.body,
@@ -53,14 +55,15 @@ describe( "Post", () => {
         .then( ( post ) => {
           this.post = post;
           done();
+        } )
+        .catch( ( err ) => {
+          console.log( err );
+          done();
         } );
-      } )
-      .catch( ( err ) => {
-        console.log( err );
-        done();
       } );
     } );
   } );
+  /* END ----- beforeEach() ----- */
 
 
   describe( ".create()", () => {

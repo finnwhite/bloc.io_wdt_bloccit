@@ -1,4 +1,5 @@
 const Topic = require( "./models" ).Topic;
+const Post = require( "./models" ).Post;
 
 module.exports = {
 
@@ -9,23 +10,22 @@ module.exports = {
   }
   ,
   addTopic( newTopic, callback ) {
-    return Topic.create( {
-      title: newTopic.title,
-      description: newTopic.description
-    } )
+    return Topic.create( newTopic )
     .then( ( topic ) => { callback( null, topic ); } )
     .catch( ( err ) => { callback( err ); } );
   }
   ,
   getTopic( id, callback ) {
-    return Topic.findByPk( id )
+    return Topic.findByPk( id, {
+      include: [ { model: Post, as: "posts" } ]
+    } )
     .then( ( topic ) => { callback( null, topic ); } )
     .catch( ( err ) => { callback( err ); } );
   }
   ,
   deleteTopic( id, callback ) {
     return Topic.destroy( { where: { id } } )
-    .then( ( topic ) => { callback( null, topic ); } )
+    .then( ( destroyedCount ) => { callback( null, destroyedCount ); } )
     .catch( ( err ) => { callback( err ); } );
   }
   ,
@@ -36,7 +36,7 @@ module.exports = {
       topic.update( updatedTopic, {
         fields: Object.keys( updatedTopic )
       } )
-      .then( ( topic ) => { callback( null, topic ); } )
+      .then( ( affected ) => { callback( null, topic ); } )
       .catch( ( err ) => { callback( err ); } );
     } );
   }

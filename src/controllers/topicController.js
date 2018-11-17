@@ -32,8 +32,8 @@ module.exports = {
   }
   ,
   destroy( req, res, next ) {
-    topicQueries.deleteTopic( req.params.id, ( err, topic ) => {
-      if ( err ) { res.redirect( 500, `/topics/${ topic.id }` ); }
+    topicQueries.deleteTopic( req.params.id, ( err, destroyedCount ) => {
+      if ( err ) { res.redirect( 500, ".." ); } // /topics/:id
       else { res.redirect( 303, "/topics" ); }
     } );
   }
