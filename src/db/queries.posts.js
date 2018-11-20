@@ -36,7 +36,7 @@ module.exports = {
         post.update( updatedPost, {
           fields: Object.keys( updatedPost )
         } )
-        .then( ( affected ) => { callback( null, post ); } )
+        .then( ( post ) => { callback( null, post ); } )
         .catch( ( err ) => { callback( err ); } );
       } )
     )

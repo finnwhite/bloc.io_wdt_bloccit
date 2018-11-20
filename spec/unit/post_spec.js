@@ -94,7 +94,7 @@ describe( "Post", () => {
         "missing title, body, or assigned topic", ( done ) => {
 
       Post.create( {
-        title: data.title,
+        title: data.title
       } )
       .then( ( post ) => { // should never succeed, execute
         done();

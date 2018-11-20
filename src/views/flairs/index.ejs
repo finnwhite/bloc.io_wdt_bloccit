@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <% include ../static/partials/head.ejs %>
+  </head>
+  <body>
+    <% include ../static/partials/navbar.ejs %>
+    <main class="container">
+
+      <h1>Flairs</h1>
+
+      <a href="/flairs/add" class="btn btn-success">New Flair</a>
+
+      <ul class="list-group">
+        <% flairs.forEach( ( flair ) => { %>
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <a href="/flairs/<%= flair.id %>"><%= flair.name %></a>
+            <span
+              class="badge badge-dark"
+              style="background: <%= flair.color %>"
+              ><%= flair.name %></span>
+          </li>
+        <% } ); %>
+      </ul>
+
+    </main>
+    <% include ../static/partials/baseScripts.ejs %>
+  </body>
+</html>

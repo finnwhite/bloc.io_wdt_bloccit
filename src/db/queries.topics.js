@@ -36,7 +36,7 @@ module.exports = {
       topic.update( updatedTopic, {
         fields: Object.keys( updatedTopic )
       } )
-      .then( ( affected ) => { callback( null, topic ); } )
+      .then( ( topic ) => { callback( null, topic ); } )
       .catch( ( err ) => { callback( err ); } );
     } );
   }
