@@ -121,6 +121,7 @@ describe( "routes : posts", () => {
       };
 
       request.post( options, ( err, res, body ) => {
+        expect( res.statusCode ).toBe( 303 );
 
         Post.findOne( { where: { title: options.form.title } } )
         .then( ( post ) => {

@@ -1,6 +1,6 @@
 const request = require( "request" );
 const server = require( "../../src/server.js" );
-const base = "http://localhost:3000/topics/";
+const base = "http://localhost:3000/topics";
 
 const sequelize = require( "../../src/db/models/index.js" ).sequelize;
 const Topic = require( "../../src/db/models" ).Topic;
@@ -44,7 +44,7 @@ describe( "routes : topics", () => {
   describe( "GET /topics/new", () => {
 
     it( "should render a new topic form", ( done ) => {
-      request.get( `${ base }new`, ( err, res, body ) => {
+      request.get( `${ base }/new`, ( err, res, body ) => {
         expect( err ).toBeNull();
         expect( body ).toContain( "New Topic" );
         done();
@@ -56,21 +56,45 @@ describe( "routes : topics", () => {
 
   describe( "POST /topics/create", () => {
 
-    const options = {
-      url: `${ base }create`,
-      form: {
-        title: "blink-182 songs",
-        description: "What's your favorite blink-182 song?"
-      }
-    };
-
     it( "should create a new topic and redirect", ( done ) => {
+
+      const options = {
+        url: `${ base }/create`,
+        form: {
+          title: "blink-182 songs",
+          description: "What's your favorite blink-182 song?"
+        }
+      };
+
       request.post( options, ( err, res, body ) => {
+        expect( res.statusCode ).toBe( 303 );
+
         Topic.findOne( { where: { title: options.form.title } } )
         .then( ( topic ) => {
-          expect( res.statusCode ).toBe( 303 );
           expect( topic.title ).toBe( options.form.title );
           expect( topic.description ).toBe( options.form.description );
+          done();
+        } )
+        .catch( ( err ) => {
+          console.log( err );
+          done();
+        } );
+      } );
+    } );
+
+    it( "should NOT create a new topic that fails validations", ( done ) => {
+
+      const options = {
+        url: `${ base }/create`,
+        form: { title: "test", description: "testing" }
+      };
+
+      request.post( options, ( err, res, body ) => {
+        expect( res.statusCode ).toBe( 303 );
+
+        Topic.findOne( { where: { title: options.form.title } } )
+        .then( ( topic ) => {
+          expect( topic ).toBeNull();
           done();
         } )
         .catch( ( err ) => {
@@ -86,7 +110,7 @@ describe( "routes : topics", () => {
   describe( "GET /topics/:id", () => {
 
     it( "should render a view with the selected topic", ( done ) => {
-      const url = `${ base }${ this.topic.id }`;
+      const url = `${ base }/${ this.topic.id }`;
       request.get( url, ( err, res, body ) => {
         expect( err ).toBeNull();
         expect( body ).toContain( "JS Frameworks" );
@@ -105,7 +129,7 @@ describe( "routes : topics", () => {
         const countBefore = topics.length;
         expect( countBefore ).toBe( 1 );
 
-        const url = `${ base }${ this.topic.id }/destroy`;
+        const url = `${ base }/${ this.topic.id }/destroy`;
         request.post( url, ( err, res, body ) => {
           Topic.findAll()
           .then( ( topics ) => {
@@ -123,7 +147,7 @@ describe( "routes : topics", () => {
   describe( "GET /topics/:id/edit", () => {
 
     it( "should render a view with an edit topic form", ( done ) => {
-      const url = `${ base }${ this.topic.id }/edit`;
+      const url = `${ base }/${ this.topic.id }/edit`;
       request.get( url, ( err, res, body ) => {
         expect( err ).toBeNull();
         expect( body ).toContain( "Edit Topic" );
@@ -140,7 +164,7 @@ describe( "routes : topics", () => {
     it( "should update the topic with the given values", ( done ) => {
 
       const options = {
-        url: `${ base }${ this.topic.id }/update`,
+        url: `${ base }/${ this.topic.id }/update`,
         form: {
           title: "JavaScript Frameworks",
           description: "There are a lot of them"
