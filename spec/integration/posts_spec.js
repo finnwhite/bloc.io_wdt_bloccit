@@ -113,6 +113,27 @@ describe( "routes : posts", () => {
       } );
     } );
 
+    it( "should NOT create a new post that fails validations", ( done ) => {
+
+      const options = {
+        url: `${ base }/${ this.topic.id }/posts/create`,
+        form: { title: "A", body: "B" }
+      };
+
+      request.post( options, ( err, res, body ) => {
+
+        Post.findOne( { where: { title: options.form.title } } )
+        .then( ( post ) => {
+          expect( post ).toBeNull();
+          done();
+        } )
+        .catch( ( err ) => {
+          console.log( err );
+          done();
+        } );
+      } );
+    } );
+
   } );
   /* END ----- POST /topics/:topicId/posts/create ----- */
 
