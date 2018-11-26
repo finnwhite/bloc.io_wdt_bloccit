@@ -1,7 +1,7 @@
+const request = require( "request" );
 const server = require( "../../src/server.js" );
 const base = "http://localhost:3000/flairs";
 
-const request = require( "request" );
 const sequelize = require( "../../src/db/models/index.js" ).sequelize;
 const Flair = require( "../../src/db/models" ).Flair;
 const palette = require( "../../src/assets/color-palette.js" );
