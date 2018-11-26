@@ -31,7 +31,10 @@ module.exports = {
     passport.authenticate( "local", ( err, user, info ) => {
       if ( err ) { return next( err ); }
       if ( !user ) {
-        req.flash( "notice", "Sign in failed. Please try again." );
+        req.flash( "error", [ {
+          param: info.message,
+          msg: "Sign in failed. Please try again."
+        } ] );
         return res.redirect( "/users/sign_in" );
       }
       req.logIn( user, ( err ) => {

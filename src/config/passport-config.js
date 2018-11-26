@@ -19,7 +19,7 @@ module.exports = {
           if ( !user ||
                !authHelper.matchPassword( password, user.password ) ) {
             return done( null, false,
-              { message: "Invalid email or password" } );
+              { message: "Invalid email or password." } );
           }
           return done( null, user );
         } );
