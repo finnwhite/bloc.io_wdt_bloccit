@@ -5,14 +5,16 @@ class ApplicationPolicy {
     this.record = record;
   }
 
-  _isOwner() {
-    return ( this.record && ( this.record.userId === this.user.id ) )
-  }
-  _isAdmin() {
-    return ( this.user && ( this.user.role === "admin" ) )
-  }
+  _isSignedIn() { return Boolean( this.user ); }
+  _isGuest() { return !this._isSignedIn(); }
+  _isMember() { return this._isSignedIn(); }
 
-  new() { return ( this.user != null ); }
+  _isOwner() { return (
+    this.user && this.record && ( this.record.userId == this.user.id )
+  ) }
+  _isAdmin() { return ( this.user && ( this.user.role === "admin" ) ) }
+
+  new() { return this._isSignedIn(); }
   add() { return this.new(); }
   create() { return this.new(); }
 
@@ -20,11 +22,9 @@ class ApplicationPolicy {
   view() { return this.show(); }
   read() { return this.show(); }
 
-  edit() {
-    return (
-      this.new() && this.record && ( this._isOwner() || this._isAdmin() )
-    )
-  }
+  edit() { return (
+    this.new() && this.record && ( this._isOwner() || this._isAdmin() )
+  ) }
   update() { return this.edit(); }
 
   destroy() { return this.update(); }

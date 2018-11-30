@@ -6,15 +6,26 @@ const authHelper = require( "../auth/helpers.js" );
 
 const base = "/topics/:topicId/posts";
 
-router.get( `${ base }/new`, postController.new );
+router.get( `${ base }/new`,
+  authHelper.ensureAuthenticated,
+  postController.new );
 router.post( `${ base }/create`,
   authHelper.ensureAuthenticated,
   validation.validatePosts,
   postController.create );
-router.get( `${ base }/:id`, postController.show );
-router.post( `${ base }/:id/destroy`, postController.destroy );
-router.get( `${ base }/:id/edit`, postController.edit );
+
+router.get( `${ base }/:id`,
+  postController.show );
+
+router.post( `${ base }/:id/destroy`,
+  authHelper.ensureAuthenticated,
+  postController.destroy );
+router.get( `${ base }/:id/edit`,
+  authHelper.ensureAuthenticated,
+  postController.edit );
 router.post( `${ base }/:id/update`,
-  validation.validatePosts, postController.update );
+  authHelper.ensureAuthenticated,
+  validation.validatePosts,
+  postController.update );
 
 module.exports = router;

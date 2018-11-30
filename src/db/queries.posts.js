@@ -3,9 +3,9 @@ const Topic = require( "./models" ).Topic;
 
 module.exports = {
 
-  addPost( newPost, callback ) {
+  addPost( values, callback ) {
     return (
-      Post.create( newPost )
+      Post.create( values )
       .then( ( post ) => { callback( null, post ); } )
       .catch( ( err ) => { callback( err ); } )
     )
@@ -27,15 +27,13 @@ module.exports = {
     )
   }
   ,
-  updatePost( id, updatedPost, callback ) {
+  updatePost( id, updates, callback ) {
     return (
       Post.findByPk( id )
       .then( ( post ) => {
-        if ( !post ) { return callback( "Post not found." ); }
+        if ( !post ) { return callback( 404 ); } // 404 Not Found
 
-        post.update( updatedPost, {
-          fields: Object.keys( updatedPost )
-        } )
+        post.update( updates, { fields: Object.keys( updates ) } )
         .then( ( post ) => { callback( null, post ); } )
         .catch( ( err ) => { callback( err ); } );
       } )

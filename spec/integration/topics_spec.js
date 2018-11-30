@@ -1,7 +1,8 @@
 const request = require( "request" );
 const server = require( "../../src/server.js" );
+const mockAuth = require( "../support/mock-auth.js" );
+
 const base = "http://localhost:3000/topics";
-const mockAuthUrl = "http://localhost:3000/auth/mock"
 
 const sequelize = require( "../../src/db/models/index.js" ).sequelize;
 const Topic = require( "../../src/db/models" ).Topic;
@@ -30,6 +31,10 @@ describe( "routes : topics", () => {
   };
   /* END ----- seeds ----- */
 
+  beforeAll( ( done ) => {
+    mockAuth.mockSignOut( done );
+  } );
+
   beforeEach( ( done ) => {
 
     this.topic;
@@ -51,6 +56,10 @@ describe( "routes : topics", () => {
   } );
   /* END ----- beforeEach() ----- */
 
+  afterEach( ( done ) => {
+    mockAuth.mockSignOut( done );
+  } );
+
 
   describe( "admin user CRUD operations", () => {
 
@@ -63,11 +72,8 @@ describe( "routes : topics", () => {
         expect( user ).not.toBeNull();
         expect( user.role ).toBe( "admin" ); // admin user
 
-        const url = mockAuthUrl;
-        const data = { role: user.role, userId: user.id, email: user.email };
-        const options = { url: url, form: data };
-
-        request.get( options, ( err, res, body ) => { // mock authenticate
+        const data = { userId: user.id, email: user.email, role: user.role };
+        mockAuth.mockSignIn( data, ( err, res, body ) => {
           expect( err ).toBeNull();
           done();
         } );
@@ -173,7 +179,7 @@ describe( "routes : topics", () => {
 
     describe( "GET /topics/:id", () => {
 
-      it( "should render a view with the selected topic", ( done ) => {
+      it( "should render a view with the requested topic", ( done ) => {
 
         const topic = this.topic; // "JS Frameworks"
         const url = `${ base }/${ topic.id }`;
@@ -192,7 +198,7 @@ describe( "routes : topics", () => {
 
     describe( "POST /topics/:id/destroy", () => {
 
-      it( "should delete the topic with the associated ID", ( done ) => {
+      it( "should delete the specified topic", ( done ) => {
 
         Topic.findAll()
         .then( ( topics ) => {
@@ -220,7 +226,7 @@ describe( "routes : topics", () => {
 
     describe( "GET /topics/:id/edit", () => {
 
-      it( "should render a view with an edit topic form", ( done ) => {
+      it( "should render a form to edit the specified topic", ( done ) => {
 
         const topic = this.topic; // "JS Frameworks"
         const url = `${ base }/${ topic.id }/edit`;
@@ -287,11 +293,8 @@ describe( "routes : topics", () => {
         expect( user ).not.toBeNull();
         expect( user.role ).toBe( "member" ); // member user
 
-        const url = mockAuthUrl;
-        const data = { role: user.role, userId: user.id, email: user.email };
-        const options = { url: url, form: data };
-
-        request.get( options, ( err, res, body ) => { // mock authenticate
+        const data = { userId: user.id, email: user.email, role: user.role };
+        mockAuth.mockSignIn( data, ( err, res, body ) => {
           expect( err ).toBeNull();
           done();
         } );
@@ -327,7 +330,7 @@ describe( "routes : topics", () => {
 
     describe( "GET /topics/new", () => {
 
-      it( "should redirect to '/topics' view", ( done ) => {
+      it( "should redirect to the '/topics' view", ( done ) => {
 
         const url = `${ base }/new`; // FORBIDDEN!
 
@@ -374,7 +377,7 @@ describe( "routes : topics", () => {
 
     describe( "GET /topics/:id", () => {
 
-      it( "should render a view with the selected topic", ( done ) => {
+      it( "should render a view with the requested topic", ( done ) => {
 
         const topic = this.topic; // "JS Frameworks"
         const url = `${ base }/${ topic.id }`;
@@ -393,7 +396,7 @@ describe( "routes : topics", () => {
 
     describe( "POST /topics/:id/destroy", () => {
 
-      it( "should NOT delete the topic with the associated ID", ( done ) => {
+      it( "should NOT delete the specified topic", ( done ) => {
 
         Topic.findAll()
         .then( ( topics ) => {
@@ -421,8 +424,8 @@ describe( "routes : topics", () => {
 
     describe( "GET /topics/:id/edit", () => {
 
-      it( "should NOT render a view with an edit topic form " +
-          "AND redirect to '/topics/:id' view", ( done ) => {
+      it( "should NOT render a form to edit the specified topic " +
+          "AND redirect to the '/topics/:id' view", ( done ) => {
 
         const topic = this.topic; // "JS Frameworks"
         const url = `${ base }/${ topic.id }/edit`; // FORBIDDEN!
@@ -442,7 +445,7 @@ describe( "routes : topics", () => {
 
     describe( "POST /topics/:id/update", () => {
 
-      it( "should NOT update the topic with the given values", ( done ) => {
+      it( "should NOT update the specified topic", ( done ) => {
 
         const topic = this.topic; // "JS Frameworks"
         const topicId = topic.id;
