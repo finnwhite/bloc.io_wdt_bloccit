@@ -104,6 +104,137 @@ describe( "routes : comments", () => {
   } );
 
 
+  describe( "admin user CRUD operations", () => {
+
+    beforeEach( ( done ) => {
+
+      const values = seeds.users[ 1 ]; // email: "admin@example.com"
+
+      User.findOrCreate( { where: values } )
+      .spread( ( user, created ) => {
+        expect( user ).not.toBeNull();
+        expect( user.role ).toBe( "admin" ); // admin user
+        this.user = user;
+
+        const values = { ...seeds.comments[ 3 ] }; // "...rock lobster!"
+        values.postId = this.post.id;
+        values.userId = user.id;
+
+        Comment.create( values )
+        .then( ( comment ) => {
+          expect( comment ).not.toBeNull();
+          this.comment.owner = comment; // owned by member
+
+          const data = { userId: user.id, email: user.email, role: user.role };
+          mockAuth.mockSignIn( data, ( err, res, body ) => {
+            expect( err ).toBeNull();
+            done();
+          } );
+        } );
+      } )
+      .catch( ( err ) => {
+        console.log( err );
+        done();
+      } );
+    } );
+    /* END ----- beforeEach() ----- */
+
+
+    describe( "POST /topics/:topicId/posts/:postId" +
+              "/comments/create", () => {
+
+      it( "should NOT create a new comment " +
+          "that fails validations", ( done ) => {
+
+        Comment.findAll()
+        .then( ( comments ) => {
+          const countBefore = comments.length;
+          expect( countBefore ).toBeGreaterThan( 0 );
+
+          const url = `${ base }/${ this.topic.id }/posts/${ this.post.id }/` +
+                      `comments/create`;
+          const values = { body: "" } // INVALID!
+          const options = { url: url, form: values };
+
+          request.post( options, ( err, res, body ) => {
+            expect( err ).toBeNull();
+            expect( res.statusCode ).toBe( 302 );
+
+            Comment.findAll()
+            .then( ( comments ) => {
+              expect( comments.length ).toBe( countBefore ); // unchanged
+              done();
+            } );
+          } );
+        } );
+      } );
+
+    } );
+    /* END --- POST /topics/:topicId/posts/:postId/comments/create --- */
+
+
+    describe( "POST /topics/:topicId/posts/:postId" +
+              "/comments/:id/destroy", () => {
+
+      it( "should delete a comment owned by the user", ( done ) => {
+
+        Comment.findAll()
+        .then( ( comments ) => {
+          const countBefore = comments.length;
+          expect( countBefore ).toBeGreaterThan( 0 );
+
+          const comment = this.comment.owner; // "...rock lobster!"
+          const url = `${ base }/${ this.topic.id }/posts/${ this.post.id }/` +
+                      `comments/${ comment.id }/destroy`;
+
+          expect( comment.userId ).toBe( this.user.id );
+
+          request.post( url, ( err, res, body ) => {
+            expect( err ).toBeNull();
+            expect( res.statusCode ).toBe( 303 );
+
+            Comment.findAll()
+            .then( ( comments ) => {
+              expect( comments.length ).toBe( countBefore - 1 );
+              done();
+            } );
+          } );
+        } );
+      } );
+
+      it( "should delete a comment owned by another user", ( done ) => {
+
+        Comment.findAll()
+        .then( ( comments ) => {
+          const countBefore = comments.length;
+          expect( countBefore ).toBeGreaterThan( 0 );
+
+          const comment = this.comment.member; // "ay caramba!!!!!"
+          const url = `${ base }/${ this.topic.id }/posts/${ this.post.id }/` +
+                      `comments/${ comment.id }/destroy`;
+
+          expect( comment.userId ).not.toBe( this.user.id );
+
+          request.post( url, ( err, res, body ) => {
+            expect( err ).toBeNull();
+            expect( res.statusCode ).toBe( 303 );
+
+            Comment.findAll()
+            .then( ( comments ) => {
+              expect( comments.length ).toBe( countBefore - 1 );
+              done();
+            } );
+          } );
+        } );
+      } );
+
+    } );
+    /* END --- POST /topics/:topicId/posts/:postId/comments/:id/destroy --- */
+
+  } );
+  /* END ----- admin user CRUD operations ----- */
+
+
   describe( "member user CRUD operations", () => {
 
     beforeEach( ( done ) => {
@@ -181,11 +312,13 @@ describe( "routes : comments", () => {
         Comment.findAll()
         .then( ( comments ) => {
           const countBefore = comments.length;
-          expect( countBefore ).toBeGreaterThan( "0" );
+          expect( countBefore ).toBeGreaterThan( 0 );
 
           const comment = this.comment.owner; // "...rock lobster!"
           const url = `${ base }/${ this.topic.id }/posts/${ this.post.id }/` +
                       `comments/${ comment.id }/destroy`;
+
+          expect( comment.userId ).toBe( this.user.id );
 
           request.post( url, ( err, res, body ) => {
             expect( err ).toBeNull();
@@ -194,6 +327,32 @@ describe( "routes : comments", () => {
             Comment.findAll()
             .then( ( comments ) => {
               expect( comments.length ).toBe( countBefore - 1 );
+              done();
+            } );
+          } );
+        } );
+      } );
+
+      it( "should NOT delete a comment owned by another user", ( done ) => {
+
+        Comment.findAll()
+        .then( ( comments ) => {
+          const countBefore = comments.length;
+          expect( countBefore ).toBeGreaterThan( 0 );
+
+          const comment = this.comment.member; // "ay caramba!!!!!"
+          const url = `${ base }/${ this.topic.id }/posts/${ this.post.id }/` +
+                      `comments/${ comment.id }/destroy`;
+
+          expect( comment.userId ).not.toBe( this.user.id ); // FORBIDDEN!
+
+          request.post( url, ( err, res, body ) => {
+            expect( err ).toBeNull();
+            expect( res.statusCode ).toBe( 302 );
+
+            Comment.findAll()
+            .then( ( comments ) => {
+              expect( comments.length ).toBe( countBefore ); // unchanged
               done();
             } );
           } );
