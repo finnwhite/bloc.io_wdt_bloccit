@@ -1,13 +1,15 @@
 'use strict';
 
+require( "dotenv" ).config();
+
 const seeds = {
   users: [ {
     email: "admin@example.com",
-    password: "123456",
+    password: process.env.megasecret,
     role: "admin"
   }, {
     email: "member@example.com",
-    password: "123456",
+    password: process.env.megasecret,
     role: "member"
   } ]
 };

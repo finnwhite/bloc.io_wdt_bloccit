@@ -1,8 +1,5 @@
 'use strict';
 
-const Topic = require( "../models" ).Topic;
-const Post = require( "../models" ).Post;
-
 const seeds = {
   posts: [ {
     title: "Snowball Fighting",
@@ -13,20 +10,30 @@ const seeds = {
     title: "Watching snow melt",
     body: "Without a doubt my favoriting things to do besides watching paint dry!",
     topicId: 3,
-    userId: 1
+    userId: 2
   }, {
     title: "Snowman Building Competition",
     body: "I love watching them melt slowly.",
     topicId: 3,
     userId: 1
   }, {
+    title: "Outdoor Escape!",
+    body: "Anybody want to do the maze at The Overlook Hotel?",
+    topicId: 3,
+    userId: 2
+  }, {
     title: "My first visit to Proxima Centauri b",
     body: "I saw some rocks.",
     topicId: 4,
-    userId: 1
+    userId: 2
   }, {
     title: "Pros of Cryosleep during the long journey",
     body: "1. Not having to answer the 'are we there yet?' question.",
+    topicId: 5,
+    userId: 1
+  }, {
+    title: "Dress code on Proxima b",
+    body: "Spacesuit, space helmet, space boots, and space gloves",
     topicId: 4,
     userId: 1
   } ]

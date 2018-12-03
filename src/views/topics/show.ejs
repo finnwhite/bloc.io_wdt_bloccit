@@ -13,14 +13,16 @@
 
       <% if ( currentUser && currentUser.isAdmin() ) { %>
         <a href="/topics/<%= topic.id %>/edit" class="btn btn-warning">Edit</a>
-        <form style="display:initial" action="/topics/<%= topic.id %>/destroy" method="post">
+        <form style="display:initial"
+              action="/topics/<%= topic.id %>/destroy"
+              method="post">
           <button type="submit" class="btn btn-danger">Delete</button>
         </form>
       <% } %>
 
       <p><%= topic.description %></p>
 
-      <hr><!-- ===== ===== ===== -->
+      <hr><!-- ===== posts ===== -->
 
       <h2>Posts</h2>
 

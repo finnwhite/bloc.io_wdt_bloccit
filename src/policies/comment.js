@@ -1,9 +1,9 @@
 const ApplicationPolicy = require( "./application.js" );
 
-class PostPolicy extends ApplicationPolicy {
+class CommentPolicy extends ApplicationPolicy {
 
   //new() { return ( this._isMember() || this._isAdmin() ) }
 
 }
 
-module.exports = PostPolicy;
+module.exports = CommentPolicy;

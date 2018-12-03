@@ -1,5 +1,6 @@
-const Post = require( "./models" ).Post;
-const Topic = require( "./models" ).Topic;
+const User = require( "../../src/db/models" ).User;
+const Post = require( "../../src/db/models" ).Post;
+const Comment = require( "../../src/db/models" ).Comment;
 
 module.exports = {
 
@@ -13,7 +14,11 @@ module.exports = {
   ,
   getPost( id, callback ) {
     return (
-      Post.findByPk( id )
+      Post.findByPk( id, {
+        include: [ { model: Comment, as: "comments",
+          include: [ { model: User } ]
+        } ]
+      } )
       .then( ( post ) => { callback( null, post ); } )
       .catch( ( err ) => { callback( err ); } )
     )

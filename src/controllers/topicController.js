@@ -53,7 +53,7 @@ module.exports = {
       else {
         const isAuthorized = new TopicPolicy( req.user, topic ).edit();
         if ( isAuthorized ) {
-          topicQueries.deleteTopic( topic.id, ( err, topic ) => {
+          topicQueries.deleteTopic( topic.id, ( err, destroyedCount ) => {
             if ( err ) { res.redirect( "." ); } // /topics/:id
             else { res.redirect( 303, ".." ); } // /topics
           } );

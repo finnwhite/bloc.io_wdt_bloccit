@@ -1,6 +1,5 @@
 const Topic = require( "./models" ).Topic;
 const Post = require( "./models" ).Post;
-const TopicPolicy = require( "../policies/topic.js" );
 
 module.exports = {
 
@@ -12,9 +11,9 @@ module.exports = {
     )
   }
   ,
-  addTopic( newTopic, callback ) {
+  addTopic( values, callback ) {
     return (
-      Topic.create( newTopic )
+      Topic.create( values )
       .then( ( topic ) => { callback( null, topic ); } )
       .catch( ( err ) => { callback( err ); } )
     )

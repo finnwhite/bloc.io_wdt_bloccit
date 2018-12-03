@@ -48,7 +48,7 @@ module.exports = {
       else {
         const isAuthorized = new PostPolicy( req.user, post ).destroy();
         if ( isAuthorized ) {
-          postQueries.deletePost( post.id, ( err, post ) => {
+          postQueries.deletePost( post.id, ( err, destroyedCount ) => {
             if ( err ) { res.redirect( "." ); } // .../posts/:id
             else { res.redirect( 303, "../.." ); } // /topics/:topicId
           } );
