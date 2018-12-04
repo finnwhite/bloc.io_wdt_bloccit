@@ -32,6 +32,17 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "postId",
       as: "comments"
     } );
+    Post.hasMany( models.Vote, {
+      foreignKey: "postId",
+      as: "votes"
+    } );
+  };
+  Post.prototype.getScore = function() {
+    if ( !( this.votes.length > 0 ) ) { return 0; }
+    return ( this.votes
+      .map( ( vote ) => { return vote.value; } )
+      .reduce( ( acc, value ) => { return ( acc + value ) } )
+    )
   };
   return Post;
 };

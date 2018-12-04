@@ -21,9 +21,6 @@ describe( "routes : comments", () => {
     posts: [ {
       title: "My first visit to Proxima Centauri b",
       body: "I saw some rocks."
-    }, {
-      title: "Dress code on Proxima b",
-      body: "Spacesuit, space helmet, space boots, and space gloves"
     } ],
     comments: [ {
       body: "ay caramba!!!!!"

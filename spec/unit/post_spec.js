@@ -140,6 +140,7 @@ describe( "Post", () => {
 
       this.post.getTopic()
       .then( ( topic ) => {
+        expect( topic.id ).toBe( this.topic.id );
         expect( topic.title ).toBe( this.topic.title ); // "Expeditions..."
         done();
       } );
@@ -181,6 +182,7 @@ describe( "Post", () => {
 
       this.post.getUser()
       .then( ( user ) => {
+        expect( user.id ).toBe( this.user.id );
         expect( user.email ).toBe( this.user.email ); // "starman@tesla.com"
         done();
       } );

@@ -153,6 +153,7 @@ describe( "Comment", () => {
 
       this.comment.getPost()
       .then( ( post ) => {
+        expect( post.id ).toBe( this.post.id );
         expect( post.title ).toBe( this.post.title ); // "My first visit..."
         done();
       } );
@@ -193,6 +194,7 @@ describe( "Comment", () => {
 
       this.comment.getUser()
       .then( ( user ) => {
+        expect( user.id ).toBe( this.user.id );
         expect( user.email ).toBe( this.user.email ); // "starman@tesla.com"
         done();
       } );
