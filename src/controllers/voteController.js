@@ -16,12 +16,12 @@ module.exports = {
       voteQueries.setVote( values, ( err, vote ) => {
         if ( err ) { req.flash( "error", err ); }
         //req.flash( "notice", "Thank you for your vote!" );
-        res.redirect( 303, req.headers.referer );
+        res.redirect( 303, ".." ); // .../posts/:postId
       } );
     }
     else {
       req.flash( "notice", "You must be signed in to do that." );
-      res.redirect( req.headers.referer );
+      res.redirect( ".." ); // .../posts/:postId
     }
   }
   ,
@@ -36,12 +36,12 @@ module.exports = {
       voteQueries.setVote( values, ( err, vote ) => {
         if ( err ) { req.flash( "error", err ); }
         //req.flash( "notice", "Thank you for your vote." );
-        res.redirect( 303, req.headers.referer );
+        res.redirect( 303, ".." ); // .../posts/:postId
       } );
     }
     else {
       req.flash( "notice", "You must be signed in to do that." );
-      res.redirect( req.headers.referer );
+      res.redirect( ".." ); // .../posts/:postId
     }
   }
 

@@ -126,6 +126,39 @@ describe( "Vote", () => {
       } );
     } );
 
+    it( "should NOT create a vote " +
+        "with a value other than 1 or -1", ( done ) => {
+
+      const values = {
+        value: 0, // INVALID!
+        postId: this.post.id, // "...Proxima Centauri b"
+        userId: this.user.id, // email: "starman@tesla.com"
+      };
+
+      Vote.create( values )
+      .then( ( vote ) => { // should never succeed, execute
+        done();
+      } )
+      .catch( ( err ) => {
+        expect( err.message ).toContain( "Validation isIn on value failed" );
+
+        const values = {
+          value: 5, // INVALID!
+          postId: this.post.id,
+          userId: this.user.id,
+        };
+
+        Vote.create( values )
+        .then( ( vote ) => { // should never succeed, execute
+          done();
+        } )
+        .catch( ( err ) => {
+          expect( err.message ).toContain( "Validation isIn on value failed" );
+          done();
+        } );
+      } );
+    } );
+
   } );
   /* END ----- Vote.create() ----- */
 

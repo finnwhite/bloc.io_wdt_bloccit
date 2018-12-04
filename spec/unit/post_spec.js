@@ -2,9 +2,13 @@ const sequelize = require( "../../src/db/models/index.js" ).sequelize;
 const Topic = require( "../../src/db/models" ).Topic;
 const Post = require( "../../src/db/models" ).Post;
 const User = require( "../../src/db/models" ).User;
+const Vote = require( "../../src/db/models" ).Vote;
 
 
 describe( "Post", () => {
+
+  const UPVOTE = 1;
+  const DOWNVOTE = -1;
 
   const seeds = {
     topics: [ {
@@ -133,7 +137,6 @@ describe( "Post", () => {
   } );
   /* END ----- Post.setTopic() ----- */
 
-
   describe( ".getTopic()", () => {
 
     it( "should return the associated topic", ( done ) => {
@@ -175,7 +178,6 @@ describe( "Post", () => {
   } );
   /* END ----- Post.setUser() ----- */
 
-
   describe( ".getUser()", () => {
 
     it( "should return the associated user", ( done ) => {
@@ -190,6 +192,125 @@ describe( "Post", () => {
 
   } );
   /* END ----- Post.getUser() ----- */
+
+
+  describe( ".getPoints()", () => {
+
+    it( "should return the sum of associated vote values", ( done ) => {
+
+      const options = { include: [ { model: Vote, as: "votes" } ] };
+
+      Post.findByPk( this.post.id, options )
+      .then( ( post ) => {
+        expect( post.getPoints() ).toBe( 0 ); // no votes
+
+        const values = {
+          value: UPVOTE,
+          postId: post.id,
+          userId: this.user.id, // email: "starman@tesla.com"
+        };
+
+        Vote.create( values )
+        .then( ( vote ) => {
+          expect( vote.value ).toBe( UPVOTE );
+
+          post.reload( options )
+          .then( ( post ) => {
+            expect( post.getPoints() ).toBe( UPVOTE ); // +1
+
+            vote.value = DOWNVOTE;
+            vote.save()
+            .then( ( vote ) => {
+              expect( vote.value ).toBe( DOWNVOTE );
+
+              post.reload( options )
+              .then( ( post ) => {
+                expect( post.getPoints() ).toBe( DOWNVOTE ); // +1
+                done();
+              } );
+            } );
+          } );
+        } );
+      } )
+      .catch( ( err ) => {
+        console.log( err );
+        done();
+      } );
+    } );
+
+  } );
+  /* END ----- Post.getPoints() ----- */
+
+
+  describe( ".hasUpvoteFor()", () => {
+
+    it( "should return TRUE if specified user " +
+        "has cast an upvote for the post", ( done ) => {
+
+      const user = this.user; // email: "starman@tesla.com"
+      const options = { include: [ { model: Vote, as: "votes" } ] };
+
+      Post.findByPk( this.post.id, options )
+      .then( ( post ) => {
+        expect( post.hasUpvoteFor( user.id ) ).toBeFalsy();
+
+        const values = { value: UPVOTE, postId: post.id, userId: user.id, };
+
+        Vote.create( values )
+        .then( ( vote ) => {
+          expect( vote.value ).toBe( UPVOTE );
+
+          post.reload( options )
+          .then( ( post ) => {
+            expect( post.hasUpvoteFor( user.id ) ).toBeTruthy();
+            expect( post.hasDownvoteFor( user.id ) ).toBeFalsy();
+            done();
+          } );
+        } );
+      } )
+      .catch( ( err ) => {
+        console.log( err );
+        done();
+      } );
+    } );
+
+  } );
+  /* END ----- Post.hasUpvoteFor() ----- */
+
+  describe( ".hasDownvoteFor()", () => {
+
+    it( "should return TRUE if specified user " +
+        "has cast a downvote for the post", ( done ) => {
+
+      const user = this.user; // email: "starman@tesla.com"
+      const options = { include: [ { model: Vote, as: "votes" } ] };
+
+      Post.findByPk( this.post.id, options )
+      .then( ( post ) => {
+        expect( post.hasDownvoteFor( user.id ) ).toBeFalsy();
+
+        const values = { value: DOWNVOTE, postId: post.id, userId: user.id, };
+
+        Vote.create( values )
+        .then( ( vote ) => {
+          expect( vote.value ).toBe( DOWNVOTE );
+
+          post.reload( options )
+          .then( ( post ) => {
+            expect( post.hasUpvoteFor( user.id ) ).toBeFalsy();
+            expect( post.hasDownvoteFor( user.id ) ).toBeTruthy();
+            done();
+          } );
+        } );
+      } )
+      .catch( ( err ) => {
+        console.log( err );
+        done();
+      } );
+    } );
+
+  } );
+  /* END ----- Post.hasDownvoteFor() ----- */
 
 } );
 /* END ----- Post ----- */

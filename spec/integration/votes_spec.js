@@ -139,6 +139,39 @@ describe( "routes : votes", () => {
         } );
       } );
 
+      it( "should NOT create a multiple upvotes " +
+          "by the same user for the same post", ( done ) => {
+
+        const where = { userId: this.user.id, postId: this.post.id };
+        const url = `${ base }/${ this.topic.id }/posts/${ this.post.id }/` +
+                    `votes/upvote`;
+        const options = { url };
+
+        Vote.count( { where } )
+        .then( ( count ) => {
+          expect( count ).toBe( 0 ); // no votes
+
+          request.get( options, ( err, res, body ) => { // UPVOTE!
+            expect( err ).toBeNull();
+
+            Vote.count( { where } )
+            .then( ( count ) => {
+              expect( count ).toBe( 1 ); // new upvote added
+
+              request.get( options, ( err, res, body ) => { // UPVOTE again!
+                expect( err ).toBeNull();
+
+                Vote.count( { where } )
+                .then( ( count ) => {
+                  expect( count ).toBe( 1 ); // unchanged
+                  done();
+                } );
+              } );
+            } );
+          } );
+        } );
+      } );
+
     } );
     /* END --- GET /topics/:topicId/posts/:postId/votes/upvote --- */
 

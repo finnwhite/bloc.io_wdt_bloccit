@@ -37,12 +37,28 @@ module.exports = (sequelize, DataTypes) => {
       as: "votes"
     } );
   };
-  Post.prototype.getScore = function() {
-    if ( !( this.votes.length > 0 ) ) { return 0; }
+  Post.prototype.getPoints = function() {
+    if ( !this.votes || !( this.votes.length > 0 ) ) { return 0; }
     return ( this.votes
       .map( ( vote ) => { return vote.value; } )
       .reduce( ( acc, value ) => { return ( acc + value ) } )
     )
+  };
+  Post.prototype.hasUpvoteFor = function( userId ) {
+    if ( !this.votes || !( this.votes.length > 0 ) ) { return false; }
+    return Boolean(
+      this.votes.find( ( vote ) => {
+        return ( ( vote.userId == userId ) && ( vote.value == 1 ) )
+      } )
+    );
+  };
+  Post.prototype.hasDownvoteFor = function( userId ) {
+    if ( !this.votes || !( this.votes.length > 0 ) ) { return false; }
+    return Boolean(
+      this.votes.find( ( vote ) => {
+        return ( ( vote.userId == userId ) && ( vote.value == -1 ) )
+      } )
+    );
   };
   return Post;
 };
