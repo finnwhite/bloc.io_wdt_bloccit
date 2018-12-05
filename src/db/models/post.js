@@ -1,4 +1,8 @@
 'use strict';
+
+const UPVOTE = 1;
+const DOWNVOTE = -1;
+
 module.exports = (sequelize, DataTypes) => {
   const Post = sequelize.define('Post', {
     title: {
@@ -45,6 +49,11 @@ module.exports = (sequelize, DataTypes) => {
         .create( { userId: post.userId, postId: post.id } )
       )
     } );
+    Post.afterCreate( ( post, callback ) => {
+      return ( models.Vote
+        .create( { value: UPVOTE, userId: post.userId, postId: post.id } )
+      )
+    } );
   };
   Post.prototype.getPoints = function() {
     if ( !this.votes || !( this.votes.length > 0 ) ) { return 0; }
@@ -57,7 +66,7 @@ module.exports = (sequelize, DataTypes) => {
     if ( !this.votes || !( this.votes.length > 0 ) ) { return false; }
     return Boolean(
       this.votes.find( ( vote ) => {
-        return ( ( vote.userId == userId ) && ( vote.value == 1 ) )
+        return ( ( vote.userId == userId ) && ( vote.value == UPVOTE ) )
       } )
     );
   };
@@ -65,7 +74,7 @@ module.exports = (sequelize, DataTypes) => {
     if ( !this.votes || !( this.votes.length > 0 ) ) { return false; }
     return Boolean(
       this.votes.find( ( vote ) => {
-        return ( ( vote.userId == userId ) && ( vote.value == -1 ) )
+        return ( ( vote.userId == userId ) && ( vote.value == DOWNVOTE ) )
       } )
     );
   };
