@@ -137,8 +137,8 @@ describe( "routes : comments", () => {
     /* END ----- beforeEach() ----- */
 
 
-    describe( "POST /topics/:topicId/posts/:postId" +
-              "/comments/create", () => {
+    describe( "POST /topics/:topicId/posts/:postId/" +
+              "comments/create", () => {
 
       it( "should NOT create a new comment " +
           "that fails validations", ( done ) => {
@@ -170,8 +170,8 @@ describe( "routes : comments", () => {
     /* END --- POST /topics/:topicId/posts/:postId/comments/create --- */
 
 
-    describe( "POST /topics/:topicId/posts/:postId" +
-              "/comments/:id/destroy", () => {
+    describe( "POST /topics/:topicId/posts/:postId/" +
+              "comments/:id/destroy", () => {
 
       it( "should delete a comment owned by the user", ( done ) => {
 
@@ -188,7 +188,7 @@ describe( "routes : comments", () => {
 
           request.post( url, ( err, res, body ) => {
             expect( err ).toBeNull();
-            expect( res.statusCode ).toBe( 303 );
+            expect( res.statusCode ).toBe( 302 );
 
             Comment.findAll()
             .then( ( comments ) => {
@@ -214,7 +214,7 @@ describe( "routes : comments", () => {
 
           request.post( url, ( err, res, body ) => {
             expect( err ).toBeNull();
-            expect( res.statusCode ).toBe( 303 );
+            expect( res.statusCode ).toBe( 302 );
 
             Comment.findAll()
             .then( ( comments ) => {
@@ -268,8 +268,8 @@ describe( "routes : comments", () => {
     /* END ----- beforeEach() ----- */
 
 
-    describe( "POST /topics/:topicId/posts/:postId" +
-              "/comments/create", () => {
+    describe( "POST /topics/:topicId/posts/:postId/" +
+              "comments/create", () => {
 
       it( "should create a new comment AND redirect", ( done ) => {
 
@@ -280,7 +280,7 @@ describe( "routes : comments", () => {
 
         request.post( options, ( err, res, body ) => {
           expect( err ).toBeNull();
-          expect( res.statusCode ).toBe( 303 );
+          expect( res.statusCode ).toBe( 302 );
 
           Comment.findOne( { where: { body: values.body } } )
           .then( ( comment ) => {
@@ -301,8 +301,8 @@ describe( "routes : comments", () => {
     /* END --- POST /topics/:topicId/posts/:postId/comments/create --- */
 
 
-    describe( "POST /topics/:topicId/posts/:postId" +
-              "/comments/:id/destroy", () => {
+    describe( "POST /topics/:topicId/posts/:postId/" +
+              "comments/:id/destroy", () => {
 
       it( "should delete a comment owned by the user", ( done ) => {
 
@@ -319,7 +319,7 @@ describe( "routes : comments", () => {
 
           request.post( url, ( err, res, body ) => {
             expect( err ).toBeNull();
-            expect( res.statusCode ).toBe( 303 );
+            expect( res.statusCode ).toBe( 302 );
 
             Comment.findAll()
             .then( ( comments ) => {
@@ -369,8 +369,8 @@ describe( "routes : comments", () => {
       mockAuth.mockSignOut( done );
     } );
 
-    describe( "POST /topics/:topicId/posts/:postId" +
-              "/comments/create", () => {
+    describe( "POST /topics/:topicId/posts/:postId/" +
+              "comments/create", () => {
 
       it( "should NOT create a new comment", ( done ) => {
 
@@ -399,8 +399,8 @@ describe( "routes : comments", () => {
     /* END --- POST /topics/:topicId/posts/:postId/comments/create --- */
 
 
-    describe( "POST /topics/:topicId/posts/:postId" +
-              "/comments/:id/destroy", () => {
+    describe( "POST /topics/:topicId/posts/:postId/" +
+              "comments/:id/destroy", () => {
 
       it( "should NOT delete the specified comment", ( done ) => {
 

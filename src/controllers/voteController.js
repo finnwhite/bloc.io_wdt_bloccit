@@ -6,8 +6,7 @@ const DOWNVOTE = -1;
 module.exports = {
 
   upvote( req, res, next ) {
-    const isAuthorized = Boolean( req.user );
-    if ( isAuthorized ) {
+    if ( req.user ) {
       const values = {
         value: UPVOTE,
         postId: req.params.postId,
@@ -15,19 +14,18 @@ module.exports = {
       };
       voteQueries.setVote( values, ( err, vote ) => {
         if ( err ) { req.flash( "error", err ); }
-        //req.flash( "notice", "Thank you for your vote!" );
-        res.redirect( 303, ".." ); // .../posts/:postId
+        //else { req.flash( "notice", "Thank you for your vote!" ); }
+        res.redirect( req.headers.referer );
       } );
     }
     else {
       req.flash( "notice", "You must be signed in to do that." );
-      res.redirect( ".." ); // .../posts/:postId
+      res.redirect( req.headers.referer );
     }
   }
   ,
   downvote( req, res, next ) {
-    const isAuthorized = Boolean( req.user );
-    if ( isAuthorized ) {
+    if ( req.user ) {
       const values = {
         value: DOWNVOTE,
         postId: req.params.postId,
@@ -35,13 +33,13 @@ module.exports = {
       };
       voteQueries.setVote( values, ( err, vote ) => {
         if ( err ) { req.flash( "error", err ); }
-        //req.flash( "notice", "Thank you for your vote." );
-        res.redirect( 303, ".." ); // .../posts/:postId
+        //else { req.flash( "notice", "Thank you for your vote." ); }
+        res.redirect( req.headers.referer );
       } );
     }
     else {
       req.flash( "notice", "You must be signed in to do that." );
-      res.redirect( ".." ); // .../posts/:postId
+      res.redirect( req.headers.referer );
     }
   }
 

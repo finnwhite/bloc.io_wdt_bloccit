@@ -49,7 +49,6 @@ describe( "routes : votes", () => {
     this.user;
     this.topic;
     this.post;
-    this.vote;
 
     sequelize.sync( { force: true } ).then( ( res ) => {
 
@@ -120,7 +119,7 @@ describe( "routes : votes", () => {
 
         request.get( options, ( err, res, body ) => {
           expect( err ).toBeNull();
-          //expect( res.statusCode ).toBe( 303 );
+          //expect( res.statusCode ).toBe( 302 );
 
           const where = { userId: this.user.id, postId: this.post.id };
 
@@ -139,7 +138,7 @@ describe( "routes : votes", () => {
         } );
       } );
 
-      it( "should NOT create a multiple upvotes " +
+      it( "should NOT create multiple upvotes " +
           "by the same user for the same post", ( done ) => {
 
         const where = { userId: this.user.id, postId: this.post.id };
@@ -185,7 +184,7 @@ describe( "routes : votes", () => {
 
         request.get( options, ( err, res, body ) => {
           expect( err ).toBeNull();
-          //expect( res.statusCode ).toBe( 303 );
+          //expect( res.statusCode ).toBe( 302 );
 
           const where = { userId: this.user.id, postId: this.post.id };
 

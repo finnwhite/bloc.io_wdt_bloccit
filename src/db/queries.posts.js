@@ -2,6 +2,7 @@ const User = require( "../../src/db/models" ).User;
 const Post = require( "../../src/db/models" ).Post;
 const Comment = require( "../../src/db/models" ).Comment;
 const Vote = require( "../../src/db/models" ).Vote;
+const Favorite = require( "../../src/db/models" ).Favorite;
 
 module.exports = {
 
@@ -15,11 +16,11 @@ module.exports = {
   ,
   getPost( id, callback ) {
     return (
-      Post.findByPk( id, {
-        include: [ { model: Comment, as: "comments",
-          include: [ { model: User } ]
-        }, { model: Vote, as: "votes" } ]
-      } )
+      Post.findByPk( id, { include: [
+        { model: Comment, as: "comments", include: [ { model: User } ] },
+        { model: Vote, as: "votes" },
+        { model: Favorite, as: "favorites" }
+      ] } )
       .then( ( post ) => { callback( null, post ); } )
       .catch( ( err ) => { callback( err ); } )
     )

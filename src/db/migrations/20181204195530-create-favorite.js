@@ -1,17 +1,12 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Votes', {
+    return queryInterface.createTable('Favorites', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
-      },
-      value: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        validate: { isIn: [ [ -1, 1 ] ] }
       },
       postId: {
         type: Sequelize.INTEGER,
@@ -44,6 +39,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Votes');
+    return queryInterface.dropTable('Favorites');
   }
 };

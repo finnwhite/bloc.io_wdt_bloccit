@@ -225,7 +225,7 @@ describe( "Post", () => {
 
               post.reload( options )
               .then( ( post ) => {
-                expect( post.getPoints() ).toBe( DOWNVOTE ); // +1
+                expect( post.getPoints() ).toBe( DOWNVOTE ); // -1
                 done();
               } );
             } );
