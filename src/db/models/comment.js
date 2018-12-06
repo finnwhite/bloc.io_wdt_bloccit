@@ -1,5 +1,7 @@
 'use strict';
+
 module.exports = (sequelize, DataTypes) => {
+
   const Comment = sequelize.define('Comment', {
     body: {
       type: DataTypes.STRING,
@@ -14,8 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     }
   }, {});
+
   Comment.associate = function(models) {
-    // associations can be defined here
+
     Comment.belongsTo( models.Post, {
       foreignKey: "postId",
       onDelete: "CASCADE"
@@ -24,6 +27,17 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId",
       onDelete: "CASCADE"
     } );
+
+    Comment.addScope( "lastFiveFor", ( userId ) => {
+      return {
+        include: [ { model: models.Post } ],
+        where: { userId },
+        order: [ [ "createdAt", "DESC" ] ],
+        limit: 5
+      }
+    } );
+
   };
+
   return Comment;
 };

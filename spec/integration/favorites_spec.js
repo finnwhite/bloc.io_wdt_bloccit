@@ -63,7 +63,7 @@ describe( "routes : favorites", () => {
         .then( ( topic ) => {
           expect( topic ).not.toBeNull();
           this.topic = topic;
-          this.post = topic.posts[ 0 ];
+          this.post = topic.posts[ 0 ]; // +upvote +favorite
           done();
         } )
         .catch( ( err ) => {
@@ -194,7 +194,7 @@ describe( "routes : favorites", () => {
         Favorite.findAll()
         .then( ( favorites ) => {
           const countBefore = favorites.length;
-          expect( countBefore ).toBe( 0 ); // no favorites yet
+          expect( countBefore ).toBeGreaterThanOrEqual( 0 );
 
           const url = `${ base }/${ this.topic.id }/posts/${ this.post.id }/` +
                       `favorites/create`;

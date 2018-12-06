@@ -1,9 +1,7 @@
 'use strict';
 
-const UPVOTE = 1;
-const DOWNVOTE = -1;
-
 module.exports = (sequelize, DataTypes) => {
+
   const Post = sequelize.define('Post', {
     title: {
       type: DataTypes.STRING,
@@ -22,8 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     }
   }, {});
+
   Post.associate = function(models) {
-    // associations can be defined here
+
     Post.belongsTo( models.Topic, {
       foreignKey: "topicId",
       onDelete: "CASCADE"
@@ -32,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId",
       onDelete: "CASCADE"
     } );
+
     Post.hasMany( models.Comment, {
       foreignKey: "postId",
       as: "comments"
@@ -44,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "postId",
       as: "favorites"
     } );
+
     Post.afterCreate( ( post, callback ) => {
       return ( models.Favorite
         .create( { userId: post.userId, postId: post.id } )
@@ -54,7 +55,20 @@ module.exports = (sequelize, DataTypes) => {
         .create( { value: UPVOTE, userId: post.userId, postId: post.id } )
       )
     } );
+
+    Post.addScope( "lastFiveFor", ( userId ) => {
+      return {
+        where: { userId },
+        order: [ [ "createdAt", "DESC" ] ],
+        limit: 5
+      }
+    } );
+
   };
+
+  const UPVOTE = 1;
+  const DOWNVOTE = -1;
+
   Post.prototype.getPoints = function() {
     if ( !this.votes || !( this.votes.length > 0 ) ) { return 0; }
     return ( this.votes
@@ -62,6 +76,7 @@ module.exports = (sequelize, DataTypes) => {
       .reduce( ( acc, value ) => { return ( acc + value ) } )
     )
   };
+
   Post.prototype.hasUpvoteFor = function( userId ) {
     if ( !this.votes || !( this.votes.length > 0 ) ) { return false; }
     return Boolean(
@@ -78,6 +93,7 @@ module.exports = (sequelize, DataTypes) => {
       } )
     );
   };
+
   Post.prototype.getFavoriteFor = function( userId ) {
     if ( !this.favorites ) { return; }
     return (
@@ -86,5 +102,6 @@ module.exports = (sequelize, DataTypes) => {
       } )
     )
   };
+
   return Post;
 };

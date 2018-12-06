@@ -1,7 +1,7 @@
 const sequelize = require( "../../src/db/models/index.js" ).sequelize;
+const User = require( "../../src/db/models" ).User;
 const Topic = require( "../../src/db/models" ).Topic;
 const Post = require( "../../src/db/models" ).Post;
-const User = require( "../../src/db/models" ).User;
 const Vote = require( "../../src/db/models" ).Vote;
 
 
@@ -36,10 +36,9 @@ describe( "Post", () => {
   /* END ----- seeds ----- */
 
   beforeEach( ( done ) => {
-
+    this.user;
     this.topic;
     this.post;
-    this.user;
 
     sequelize.sync( { force: true } ).then( ( res ) => {
 
@@ -56,7 +55,7 @@ describe( "Post", () => {
         Topic.create( values, { include: { model: Post, as: "posts" } } )
         .then( ( topic ) => {
           this.topic = topic;
-          this.post = topic.posts[ 0 ];
+          this.post = topic.posts[ 0 ]; // +upvote +favorite
           done();
         } )
         .catch( ( err ) => {
@@ -202,7 +201,8 @@ describe( "Post", () => {
 
       Post.findByPk( this.post.id, options )
       .then( ( post ) => {
-        expect( post.getPoints() ).toBe( 0 ); // no votes
+        const points = post.getPoints();
+        expect( points ).toBeGreaterThanOrEqual( 0 );
 
         const values = {
           value: UPVOTE,
@@ -216,7 +216,7 @@ describe( "Post", () => {
 
           post.reload( options )
           .then( ( post ) => {
-            expect( post.getPoints() ).toBe( UPVOTE ); // +1
+            expect( post.getPoints() ).toBe( points + UPVOTE ); // +1
 
             vote.value = DOWNVOTE;
             vote.save()
@@ -225,7 +225,7 @@ describe( "Post", () => {
 
               post.reload( options )
               .then( ( post ) => {
-                expect( post.getPoints() ).toBe( DOWNVOTE ); // -1
+                expect( post.getPoints() ).toBe( points + DOWNVOTE ); // -1
                 done();
               } );
             } );
@@ -247,31 +247,31 @@ describe( "Post", () => {
     it( "should return TRUE if specified user " +
         "has cast an upvote for the post", ( done ) => {
 
-      const user = this.user; // email: "starman@tesla.com"
       const options = { include: [ { model: Vote, as: "votes" } ] };
 
       Post.findByPk( this.post.id, options )
       .then( ( post ) => {
-        expect( post.hasUpvoteFor( user.id ) ).toBeFalsy();
 
-        const values = { value: UPVOTE, postId: post.id, userId: user.id, };
+        const values = seeds.users[ 1 ]; // email: "ada@example.com"
 
-        Vote.create( values )
-        .then( ( vote ) => {
-          expect( vote.value ).toBe( UPVOTE );
+        User.create( values )
+        .then( ( user ) => {
+          expect( post.hasUpvoteFor( user.id ) ).toBeFalsy();
 
-          post.reload( options )
-          .then( ( post ) => {
-            expect( post.hasUpvoteFor( user.id ) ).toBeTruthy();
-            expect( post.hasDownvoteFor( user.id ) ).toBeFalsy();
-            done();
+          const values = { value: UPVOTE, postId: post.id, userId: user.id, };
+
+          Vote.create( values )
+          .then( ( vote ) => {
+            expect( vote.value ).toBe( UPVOTE );
+
+            post.reload( options )
+            .then( ( post ) => {
+              expect( post.hasUpvoteFor( user.id ) ).toBeTruthy();
+              done();
+            } );
           } );
         } );
       } )
-      .catch( ( err ) => {
-        console.log( err );
-        done();
-      } );
     } );
 
   } );
@@ -282,31 +282,31 @@ describe( "Post", () => {
     it( "should return TRUE if specified user " +
         "has cast a downvote for the post", ( done ) => {
 
-      const user = this.user; // email: "starman@tesla.com"
       const options = { include: [ { model: Vote, as: "votes" } ] };
 
       Post.findByPk( this.post.id, options )
       .then( ( post ) => {
-        expect( post.hasDownvoteFor( user.id ) ).toBeFalsy();
 
-        const values = { value: DOWNVOTE, postId: post.id, userId: user.id, };
+        const values = seeds.users[ 1 ]; // email: "ada@example.com"
 
-        Vote.create( values )
-        .then( ( vote ) => {
-          expect( vote.value ).toBe( DOWNVOTE );
+        User.create( values )
+        .then( ( user ) => {
+          expect( post.hasDownvoteFor( user.id ) ).toBeFalsy();
 
-          post.reload( options )
-          .then( ( post ) => {
-            expect( post.hasUpvoteFor( user.id ) ).toBeFalsy();
-            expect( post.hasDownvoteFor( user.id ) ).toBeTruthy();
-            done();
+          const values = { value: DOWNVOTE, postId: post.id, userId: user.id, };
+
+          Vote.create( values )
+          .then( ( vote ) => {
+            expect( vote.value ).toBe( DOWNVOTE );
+
+            post.reload( options )
+            .then( ( post ) => {
+              expect( post.hasDownvoteFor( user.id ) ).toBeTruthy();
+              done();
+            } );
           } );
         } );
       } )
-      .catch( ( err ) => {
-        console.log( err );
-        done();
-      } );
     } );
 
   } );

@@ -8,8 +8,8 @@ module.exports = {
   }
   ,
   create( req, res, next ) {
-    const newUser = { email: req.body.email, password: req.body.password };
-    userQueries.createUser( newUser, ( err, user ) => {
+    const values = { email: req.body.email, password: req.body.password };
+    userQueries.createUser( values, ( err, user ) => {
       if ( err ) {
         req.flash( "error", err );
         res.redirect( "/users/sign_up" );
@@ -49,6 +49,16 @@ module.exports = {
     req.logout();
     req.flash( "notice", "You have successfully signed out." );
     res.redirect( "/" );
+  }
+  ,
+  show( req, res, next ) {
+    userQueries.getUser( req.params.id, ( err, profile ) => {
+      if ( err || !profile.user ) {
+        req.flash( "notice", "No user found with that ID." );
+        res.redirect( "/" );
+      }
+      else { res.render( "users/show", { ...profile } ); }
+    } );
   }
 
 };
