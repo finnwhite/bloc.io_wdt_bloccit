@@ -155,7 +155,7 @@ describe( "routes : users", () => {
 
         Topic.create( values, { include: { model: Post, as: "posts" } } )
         .then( ( topic ) => {
-          this.post = topic.posts[ 0 ];
+          this.post = topic.posts[ 0 ]; // +upvote +favorite
 
           const values = { ...seeds.comments[ 0 ] }; // "...alright."
           values.postId = this.post.id;
@@ -175,7 +175,7 @@ describe( "routes : users", () => {
     } );
     /* END ----- beforeEach() ----- */
 
-    it( "should render a view with a list of comments and posts" +
+    it( "should render a view with a list of comments and posts " +
         "created by the specified user", ( done ) => {
 
       const url = `${ base }/${ this.user.id }`;
@@ -184,8 +184,12 @@ describe( "routes : users", () => {
         expect( err ).toBeNull();
         expect( res.statusCode ).toBe( 200 );
         expect( body ).toContain( this.user.email ); // "starman@tesla.com"
+        expect( body ).toContain( "<h2>Latest Posts</h2>" );
         expect( body ).toContain( this.post.title ); // "Snowball Fighting"
+        expect( body ).toContain( "<h2>Latest Comments</h2>" );
         expect( body ).toContain( this.comment.body ); // "...alright."
+        expect( body ).toContain( "<h2>Favorite Posts</h2>" );
+        expect( body ).toContain( this.post.title ); // "Snowball Fighting"
         done();
       } );
     } );

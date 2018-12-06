@@ -1,5 +1,7 @@
 'use strict';
+
 module.exports = (sequelize, DataTypes) => {
+
   const User = sequelize.define('User', {
     email: {
       allowNull: false,
@@ -17,8 +19,9 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: "member"
     }
   }, {});
+
   User.associate = function(models) {
-    // associations can be defined here
+
     User.hasMany( models.Post, {
       foreignKey: "userId",
       as: "posts"
@@ -35,12 +38,23 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "postId",
       as: "favorites"
     } );
+
+    User.addScope( "favoritePosts", {
+      include: [ {
+        model: models.Favorite, as: "favorites",
+        include: [ { model: models.Post } ],
+        order: [ [ "createdAt", "DESC" ] ]
+      } ]
+    } );
+
   };
+
   User.prototype.isAdmin = function() {
     return ( this.role === "admin" );
   };
   User.prototype.isOwner = function( record ) {
     return ( record.userId == this.id );
   };
+
   return User;
 };

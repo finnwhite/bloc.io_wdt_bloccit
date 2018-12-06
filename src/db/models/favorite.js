@@ -1,5 +1,7 @@
 'use strict';
+
 module.exports = (sequelize, DataTypes) => {
+
   const Favorite = sequelize.define('Favorite', {
     postId: {
       type: DataTypes.INTEGER,
@@ -10,8 +12,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     }
   }, {});
+
   Favorite.associate = function(models) {
-    // associations can be defined here
+
     Favorite.belongsTo( models.Post, {
       foreignKey: "postId",
       onDelete: "CASCADE"
@@ -20,6 +23,16 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId",
       onDelete: "CASCADE"
     } );
+
+    Favorite.addScope( "favoritedBy", ( userId ) => {
+      return {
+        include: [ { model: models.Post } ],
+        where: { userId },
+        order: [ [ "createdAt", "DESC" ] ]
+      }
+    } );
+
   };
+
   return Favorite;
 };

@@ -28,13 +28,13 @@
   "homepage": "https://github.com/finnwhite/bloc.io_wdt_bloccit#readme",
   "devDependencies": {
     "faker": "^4.1.0",
-    "jasmine": "^3.3.0",
+    "jasmine": "^3.3.1",
     "request": "^2.88.0"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
-    "dotenv": "^6.1.0",
+    "dotenv": "^6.2.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "express-flash": "0.0.2",
@@ -42,9 +42,9 @@
     "express-validator": "^5.3.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "pg": "^7.6.1",
+    "pg": "^7.7.1",
     "pg-hstore": "^2.3.2",
     "sequelize": "^4.41.2",
-    "sequelize-cli": "^5.3.0"
+    "sequelize-cli": "^5.4.0"
   }
 }
