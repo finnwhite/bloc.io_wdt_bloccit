@@ -17,12 +17,14 @@ module.exports = {
     app.use( bodyParser.urlencoded( { extended: true } ) );
 
     app.use( expressValidator() );
+
     app.use( session( {
-      secret: process.env.cookiesecret,
+      secret: ( process.env.cookiesecret || "b-BL0CC1T r3al g00d" ),
       resave: false,
       saveUninitialized: false,
       cookie: { maxAge: 1.21e+9 } // 14 days
     } ) );
+
     app.use( flash() );
 
     passportConfig.init( app );
