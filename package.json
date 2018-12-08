@@ -6,14 +6,11 @@
   "scripts": {
     "test": "export NODE_ENV=test && jasmine",
     "start": "node src/server.js",
-    "pg-stop": "pg_ctl -D ~/PostgreSQL/data/pg96 stop",
-    "pg-start": "pg_ctl -D ~/PostgreSQL/data/pg96 start",
-    "sq-mundo": "sequelize db:migrate:undo:all",
-    "sq-mundo*": "sequelize db:migrate:undo:all && sequelize db:migrate:undo:all --env test",
-    "sq-migrate": "sequelize db:migrate",
-    "sq-migrate*": "sequelize db:migrate && sequelize db:migrate --env test",
-    "sq-dbreset": "npm run sq-mundo && npm run sq-migrate",
-    "sq-dbreset*": "npm run sq-mundo* && npm run sq-migrate*",
+    "pg-info": "pgc info pg96",
+    "pg-restart": "pgc restart pg96",
+    "sq-migrate": "sequelize db:migrate && sequelize db:migrate --env test",
+    "sq-mgundo": "sequelize db:migrate:undo:all && sequelize db:migrate:undo:all --env test",
+    "sq-mgreset": "npm run sq-mgundo && npm run sq-migrate",
     "sq-seeddemo": "sequelize db:seed --seed src/db/seeds/20181129004251-demo-users.js src/db/seeds/20181129004258-demo-topics.js src/db/seeds/20181129004303-demo-posts.js 20181203021547-demo-comments.js 20181204012504-demo-votes.js"
   },
   "repository": {

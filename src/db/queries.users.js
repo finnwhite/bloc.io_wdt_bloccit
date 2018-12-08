@@ -25,7 +25,7 @@ module.exports = {
     .then( ( user ) => {
       if ( !user ) { callback( 404 ); }
       else {
-        console.log( user.favorites ); // works on test, not in browser
+        //console.log( user.favorites ); // works on test, not in browser
 
         Post.scope( { method: [ "lastFiveFor", id ] } ).findAll()
         .then( ( posts ) => {
@@ -35,7 +35,7 @@ module.exports = {
 
             Favorite.scope( { method: [ "favoritedBy", id ] } ).findAll()
             .then( ( favorites ) => {
-              console.log( favorites ); // works on test, works in browser
+              //console.log( favorites ); // works on test, works in browser
 
               callback( null, { user, posts, comments, favorites } )
             } )
